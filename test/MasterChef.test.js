@@ -1,17 +1,17 @@
 const { expectRevert, time } = require('@openzeppelin/test-helpers');
-const CakeToken = artifacts.require('CakeToken');
+const HashToken = artifacts.require('HashToken');
 const SyrupBar = artifacts.require('SyrupBar');
-const MasterChef = artifacts.require('MasterChef');
+const MasterGrower = artifacts.require('MasterGrower');
 const MockBEP20 = artifacts.require('libs/MockBEP20');
 
-contract('MasterChef', ([alice, bob, carol, dev, minter]) => {
+contract('MasterGrower', ([alice, bob, carol, dev, minter]) => {
     beforeEach(async () => {
-        this.cake = await CakeToken.new({ from: minter });
-        this.syrup = await SyrupBar.new(this.cake.address, { from: minter });
+        this.hash = await HashToken.new({ from: minter });
+        this.syrup = await SyrupBar.new(this.hash.address, { from: minter });
         this.lp1 = await MockBEP20.new('LPToken', 'LP1', '1000000', { from: minter });
         this.lp2 = await MockBEP20.new('LPToken', 'LP2', '1000000', { from: minter });
         this.lp3 = await MockBEP20.new('LPToken', 'LP3', '1000000', { from: minter });
-        this.chef = await MasterChef.new(this.cake.address, this.syrup.address, dev, '1000', '100', { from: minter });
+        this.chef = await MasterGrower.new(this.hash.address, this.syrup.address, dev, '1000', '100', { from: minter });
         await this.cake.transferOwnership(this.chef.address, { from: minter });
         await this.syrup.transferOwnership(this.chef.address, { from: minter });
 

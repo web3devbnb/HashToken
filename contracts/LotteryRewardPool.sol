@@ -1,28 +1,30 @@
+// SPDX-License-Identifier: UNLICENSED
+
 pragma solidity 0.6.12;
 
 import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/IBEP20.sol';
 import '@pancakeswap/pancake-swap-lib/contracts/token/BEP20/SafeBEP20.sol';
 import '@pancakeswap/pancake-swap-lib/contracts/access/Ownable.sol';
 
-import './MasterChef.sol';
+import './MasterGrower.sol';
 
 contract LotteryRewardPool is Ownable {
     using SafeBEP20 for IBEP20;
 
-    MasterChef public chef;
+    MasterGrower public chef;
     address public adminAddress;
     address public receiver;
     IBEP20 public lptoken;
-    IBEP20 public cake;
+    IBEP20 public hash;
 
     constructor(
-        MasterChef _chef,
-        IBEP20 _cake,
+        MasterGrower _chef,
+        IBEP20 _hash,
         address _admin,
         address _receiver
     ) public {
         chef = _chef;
-        cake = _cake;
+        hash = _hash;
         adminAddress = _admin;
         receiver = _receiver;
     }
@@ -44,8 +46,8 @@ contract LotteryRewardPool is Ownable {
 
     function  harvest(uint256 _pid) external onlyAdmin {
         chef.deposit(_pid, 0);
-        uint256 balance = cake.balanceOf(address(this));
-        cake.safeTransfer(receiver, balance);
+        uint256 balance = hash.balanceOf(address(this));
+        hash.safeTransfer(receiver, balance);
         emit Harvest(msg.sender, _pid);
     }
 
@@ -54,12 +56,12 @@ contract LotteryRewardPool is Ownable {
     }
 
     function  pendingReward(uint256 _pid) external view returns (uint256) {
-        return chef.pendingCake(_pid, address(this));
+        return chef.pendingHash(_pid, address(this));
     }
 
     // EMERGENCY ONLY.
     function emergencyWithdraw(IBEP20 _token, uint256 _amount) external onlyOwner {
-        cake.safeTransfer(address(msg.sender), _amount);
+        hash.safeTransfer(address(msg.sender), _amount);
         emit EmergencyWithdraw(msg.sender, _amount);
     }
 

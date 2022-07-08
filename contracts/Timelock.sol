@@ -13,7 +13,7 @@ pragma solidity 0.6.12;
 
 // XXX: import "./SafeMath.sol";
 import "@pancakeswap/pancake-swap-lib/contracts/math/SafeMath.sol";
-
+// SPDX-License-Identifier: UNLICENSED"
 contract Timelock {
     using SafeMath for uint;
 
